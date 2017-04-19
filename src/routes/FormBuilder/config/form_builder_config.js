@@ -1,0 +1,5 @@
+export const FORM_BUILDER_INPUT_TYPES = {
+  TEXT: 'TEXT',
+  NUMBER: 'NUMBER',
+  RADIO: 'RADIO'
+}
