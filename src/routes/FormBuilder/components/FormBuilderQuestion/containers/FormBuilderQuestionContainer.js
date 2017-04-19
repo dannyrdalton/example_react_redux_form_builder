@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-// import { increment, doubleAsync } from '../modules/form_builder'
+import { onQuestionChange, onTypeChange, addSubInput } from '../modules/form_builder_question'
 import FormBuilderQuestion from '../components/FormBuilderQuestion'
 
 /*  Object of action creators (can also be function that returns object).
@@ -7,6 +7,9 @@ import FormBuilderQuestion from '../components/FormBuilderQuestion'
     implementing our wrapper around increment; the component doesn't care   */
 
 const mapDispatchToProps = {
+  onQuestionChange,
+  onTypeChange,
+  addSubInput
 }
 
 const mapStateToProps = (state) => ({

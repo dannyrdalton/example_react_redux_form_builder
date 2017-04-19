@@ -12,7 +12,7 @@ export default (store) => ({
       const FormBuilder = require('./containers/FormBuilderContainer').default
       const reducer = require('./modules/form_builder').default
 
-      /*  Add the reducer to the store on key 'counter'  */
+      /*  Add the reducer to the store on key 'formBuilder'  */
       injectReducer(store, { key: 'formBuilder', reducer })
 
       /*  Return getComponent   */

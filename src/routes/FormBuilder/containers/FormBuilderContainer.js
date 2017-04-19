@@ -1,5 +1,7 @@
 import { connect } from 'react-redux'
-import { addInput } from '../modules/form_builder'
+import { addInput, addSubInput, onQuestionChange, onTypeChange } from '../modules/form_builder'
+
+console.log(onTypeChange)
 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -13,7 +15,10 @@ import FormBuilder from '../components/FormBuilder'
     implementing our wrapper around increment; the component doesn't care   */
 
 const mapDispatchToProps = {
-  addInput
+  addInput,
+  addSubInput,
+  onQuestionChange,
+  onTypeChange
 }
 
 const mapStateToProps = (state) => ({

@@ -1,16 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import FormBuilderQuestion from './FormBuilderQuestion/containers/FormBuilderQuestionContainer'
+import FormBuilderQuestion from './FormBuilderQuestion/components/FormBuilderQuestion'
+// import FormBuilderQuestions from './FormBuilderQuestion/components/FormBuilderQuestions'
+
+console.log(FormBuilderQuestion)
 
 export const FormBuilder = (props) => (
   <div className="form-builder">
     Form Builder 
-    <div className="form-builder-questions">
-      {props.formBuilder.questions.map((question, index) =>
-        <FormBuilderQuestion key={index}></FormBuilderQuestion>
-      )}
-    </div>
+    <FormBuilderQuestion
+      questions={props.formBuilder.questions}
+      onAddSubInput={props.addSubInput}
+      onQuestionChange={props.onQuestionChange}
+      onTypeChange={props.onTypeChange}>
+    </FormBuilderQuestion>
     <div className="form-builder-buttons">
       <div className="btn btn-success" onClick={props.addInput}>Add Input</div> 
     </div>
