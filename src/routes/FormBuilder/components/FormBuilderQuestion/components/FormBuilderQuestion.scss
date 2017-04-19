@@ -1,0 +1,19 @@
+.form-builder-question {
+  text-align: left;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.form-builder-question-row {
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.form-builder-question-label {
+  display: inline-block;
+  text-align: left;
+  width: 80px;
+}

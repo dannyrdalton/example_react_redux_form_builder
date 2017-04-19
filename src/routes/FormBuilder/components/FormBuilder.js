@@ -6,14 +6,15 @@ import FormBuilderQuestion from './FormBuilderQuestion/containers/FormBuilderQue
 export const FormBuilder = (props) => (
   <div className="form-builder">
     Form Builder 
-    <FormBuilderQuestion></FormBuilderQuestion>
+    <div className="form-builder-questions">
+      {props.formBuilder.questions.map((question, index) =>
+        <FormBuilderQuestion key={index}></FormBuilderQuestion>
+      )}
+    </div>
+    <div className="form-builder-buttons">
+      <div className="btn btn-success" onClick={props.addInput}>Add Input</div> 
+    </div>
   </div>
 )
-
-FormBuilder.propTypes = {
-  counter     : PropTypes.number.isRequired,
-  doubleAsync : PropTypes.func.isRequired,
-  increment   : PropTypes.func.isRequired
-}
 
 export default FormBuilder

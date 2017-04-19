@@ -6,7 +6,12 @@ import FormBuilderQuestion from '../components/FormBuilderQuestion'
     Keys will be passed as props to presentational components. Here we are
     implementing our wrapper around increment; the component doesn't care   */
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+}
+
+const mapStateToProps = (state) => ({
+  formBuilderQuestion: state.formBuilderQuestion
+})
 
 /*  Note: mapStateToProps is where you should use `reselect` to create selectors, ie:
 
