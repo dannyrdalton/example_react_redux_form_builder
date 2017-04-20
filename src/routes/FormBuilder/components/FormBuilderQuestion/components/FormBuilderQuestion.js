@@ -6,7 +6,7 @@ import './FormBuilderQuestion.scss'
 
 //currently only supports whole number answers
 
-export const FormBuilderQuestion = ({ questions, onAddSubInput, onTextChange, onTypeChange, onConditionChange, onConditionValueChange }) => (
+export const FormBuilderQuestion = ({ questions, onAddSubInput, onDeleteInput, onTextChange, onTypeChange, onConditionChange, onConditionValueChange }) => (
   <div className='form-builder-questions'>
     {questions.map((question, index) =>
       <div key={question.id} className='form-builder-question'>
@@ -54,7 +54,7 @@ export const FormBuilderQuestion = ({ questions, onAddSubInput, onTextChange, on
           </div>
           <div className='form-builder-question-row'>
             <div className="btn btn-success" onClick={() => onAddSubInput(question)}>Add Sub-Input</div>
-            <div className="btn btn-danger">Delete</div>
+            <div className="btn btn-danger" onClick={() => onDeleteInput(question)}>Delete</div>
           </div>
         </div>
         <div className='form-builder-question-sub-inputs'>
@@ -62,6 +62,7 @@ export const FormBuilderQuestion = ({ questions, onAddSubInput, onTextChange, on
            <FormBuilderQuestion
             questions={question.children}
             onAddSubInput={onAddSubInput}
+            onDeleteInput={onDeleteInput}
             onTextChange={onTextChange}
             onTypeChange={onTypeChange}
             onConditionChange={onConditionChange}

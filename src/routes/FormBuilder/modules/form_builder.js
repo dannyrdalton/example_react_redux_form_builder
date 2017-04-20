@@ -20,6 +20,13 @@ export function addSubInput(question, index) {
   }
 }
 
+export function deleteInput(question) {
+  return {
+    type: ACTION_TYPES.DELETE_INPUT,
+    questionId: question.id
+  }
+}
+
 export function onTextChange(question, inputValue) {
   return {
     type: ACTION_TYPES.ON_TEXT_CHANGE,
@@ -54,6 +61,30 @@ export function onConditionValueChange(question, inputValue) {
 
 export const actions = {
   addInput
+}
+
+// ------------------------------------
+// Action Handler Helpers
+// ------------------------------------
+
+function recursiveDeleteInput(state, action) {
+  var questionToDelete = state[action.questionId],
+      childIds = questionToDelete.childIds
+
+  let  {[questionToDelete.id]: deleted, ...newState} = state;
+
+  console.log('childIds is', childIds)
+
+  if (!childIds.length) {
+    return newState
+  }
+
+  childIds.forEach(id => {
+    action.questionId = id;
+    newState = recursiveDeleteInput(state, action)
+  })
+
+  return newState;
 }
 
 // ------------------------------------
@@ -93,6 +124,17 @@ const QUESTIONS_BY_ID_ACTION_HANDLERS = {
       [action.question.id]: action.question,
       [newQuestion.id]: newQuestion
     }
+  },
+  [ACTION_TYPES.DELETE_INPUT]: (state, action) => {
+    console.log('deleting input')
+    return recursiveDeleteInput(state, action)
+
+    // var questionToDelete = state[action.questionId],
+    //     childIds = questionToDelete.childIds
+
+    // let  {[questionToDelete.id]: deleted, ...newState} = state;
+
+    // return newState
   },
   [ACTION_TYPES.ON_TEXT_CHANGE]: (state, action) => {
     action.question.text = action.text
@@ -141,6 +183,10 @@ function getParentQuestion(question, state) {
 function getChildQuestions(question, state) {
   var childQuestion;
 
+  if (!question.childIds) {
+    return []
+  }
+
   return question.childIds.map(id => {
     childQuestion = state.byId[id]
 
@@ -188,6 +234,9 @@ const ALL_QUESTION_IDS_ACTION_HANDLERS = {
   },
   [ACTION_TYPES.ADD_SUB_INPUT]: (state, action) => {
     return [...state, action.id]
+  },
+  [ACTION_TYPES.DELETE_INPUT]: (state, action) => {
+    return state.filter(id => id !== action.questionId)
   }
 }
 

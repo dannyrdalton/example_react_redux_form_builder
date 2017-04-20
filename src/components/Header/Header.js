@@ -10,7 +10,7 @@ export const Header = () => (
     </IndexLink>
     {' · '}
     <Link to='/form-builder' activeClassName='route--active'>
-      Counter
+      Form Builder
     </Link>
   </div>
 )

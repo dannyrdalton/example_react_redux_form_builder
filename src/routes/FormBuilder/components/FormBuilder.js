@@ -12,6 +12,7 @@ export const FormBuilder = (props) => (
     <FormBuilderQuestion
       questions={props.questionsList}
       onAddSubInput={props.addSubInput}
+      onDeleteInput={props.deleteInput}
       onTextChange={props.onTextChange}
       onTypeChange={props.onTypeChange}
       onConditionChange={props.onConditionChange}

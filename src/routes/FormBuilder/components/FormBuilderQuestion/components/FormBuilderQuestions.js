@@ -1,3 +1,4 @@
+// this will be deleted soon
 import React from 'react'
 import { QUESTION_TYPES_ARRAY } from '../config/form_builder_question_config'
 

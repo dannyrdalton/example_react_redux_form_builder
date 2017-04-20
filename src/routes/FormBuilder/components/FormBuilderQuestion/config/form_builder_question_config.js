@@ -1,3 +1,5 @@
+// this will be deleted soon: all config will be in ../../config/form_builder_config.js
+
 const QUESTION_CONDITIONS = {
   EQUALS: {
     id:'EQUALS',
