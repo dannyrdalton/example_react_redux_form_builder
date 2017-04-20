@@ -10,7 +10,7 @@ export const FormBuilder = (props) => (
   <div className="form-builder">
     Form Builder 
     <FormBuilderQuestion
-      questions={props.formBuilder.questions}
+      questions={props.questionsList}
       onAddSubInput={props.addSubInput}
       onQuestionChange={props.onQuestionChange}
       onTypeChange={props.onTypeChange}>

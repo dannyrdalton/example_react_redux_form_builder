@@ -20,5 +20,8 @@ export default (store) => ({
 
     /* Webpack named bundle   */
     }, 'formBuilder')
+  },
+  onEnter (nextState, replace) {
+    console.log(store.getState());
   }
 })

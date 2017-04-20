@@ -1,22 +1,21 @@
 import { combineReducers } from 'redux'
-import formBuilderQuestionReducer from '../components/FormBuilderQuestion/modules/form_builder_question'
+import { ACTION_TYPES } from '../config/form_builder_config'
+
+let nextInputId = 0;
 
 export function addInput() {
   return (dispatch, getState) => {
     dispatch({
-      type: 'ADD_INPUT',
-      payload: getState().formBuilder
+      type: ACTION_TYPES.ADD_INPUT,
+      id: (nextInputId++).toString()
     }) 
   }
 }
 
 export function addSubInput(question, index) {
   return {
-    type: 'ADD_SUB_INPUT',
-    payload: {
-      question: question,
-      index: index
-    }
+    type: ACTION_TYPES.ADD_SUB_INPUT,
+    question: question
   }
 }
 
@@ -45,32 +44,37 @@ export const actions = {
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
-const ACTION_HANDLERS = {
-  'ADD_INPUT': (state, action) => {
-    var questions = action.payload.questions
-    questions.push({
-      id: questions.length + 1,
-      inputs: []
-    })
-
-    console.log('adding input!')
-
-    return Object.assign({}, state, {
-      questions: questions
-    })
+const QUESTIONS_BY_ID_ACTION_HANDLERS = {
+  [ACTION_TYPES.ADD_INPUT]: (state, action) => {
+    //refactor into another function
+    return {
+      ...state,
+      [action.id]: {
+        id: action.id,
+        parentId: undefined,
+        children: []
+      }
+    }
   },
-  'ADD_SUB_INPUT': (state, action) => {
-    console.log('adding sub-input')
+  [ACTION_TYPES.ADD_SUB_INPUT]: (state, action) => {
+    console.log('adding sub input')
+    console.log('action', action)
 
-    var newState = state,
-        question = action.payload.question,
-        indexToModify = action.payload.index
+    var newQuestion = {
+      id: action.question.id + action.question.children.length,
+      parentId: action.question.id,
+      children: []
+    }
 
-    newState.questions[indexToModify].inputs.push({
-      id: '' + question.id + (newState.questions[indexToModify].inputs.length + 1)
-    })
+    action.question.children.push(newQuestion)
 
-    return Object.assign({}, newState)
+    console.log(action.question)
+
+    return {
+      ...state,
+      [action.question.id]: action.question,
+      [newQuestion.id]: newQuestion
+    }
   },
   'ON_QUESTION_CHANGE': (state, action) => {
     console.log('question change')
@@ -86,15 +90,63 @@ const ACTION_HANDLERS = {
   }
 }
 
+//would be in a Question model normally
+// function populateChildQuestions(question, questionsById) {
+//   question.children = []
+
+//   question.childIds.forEach(id => {
+//     question.children.push(questionsById[id])
+//   })
+// }
+
+export function getQuestionsList(state) {
+  var questionList = [],
+      question;
+
+  console.log('getQuestionsList', state)
+
+  state.allIds.forEach(id => {
+    question = state.byId[id]
+
+    if (!question.parentId) {
+      questionList.push(question)
+    }
+  })
+
+
+  return questionList
+}
+
+const ALL_QUESTION_IDS_ACTION_HANDLERS = {
+  [ACTION_TYPES.ADD_INPUT]: (state, action) => {
+    return [...state, action.id]
+  }, 
+}
+
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = {
-  questions: []
-}
+// reducers needed: questions reducer (for questions object), questionsList: (for questions array)
 
-export default function formBuilderReducer (state = initialState, action) {
-  const handler = ACTION_HANDLERS[action.type]
+function questionsById(state = {}, action) {
+  const handler = QUESTIONS_BY_ID_ACTION_HANDLERS[action.type]
 
   return handler ? handler(state, action) : state
 }
+
+function allQuestionIds(state = [], action) {
+  const handler = ALL_QUESTION_IDS_ACTION_HANDLERS[action.type]
+
+  return handler ? handler(state, action) : state
+}
+
+const questions = combineReducers({
+  byId: questionsById,
+  allIds: allQuestionIds
+})
+
+const formBuilderReducer = combineReducers({
+  questions
+})
+
+export default formBuilderReducer

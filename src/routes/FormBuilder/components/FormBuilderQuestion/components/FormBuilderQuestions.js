@@ -21,7 +21,7 @@ export const FormBuilderQuestions = ({ questions }) => (
             </select>
           </div>
           <div className='form-builder-question-row'>
-            <div className="btn btn-success" onClick={onAddSubInput}>Add Sub-Input</div>
+            <div className="btn btn-success" onClick={() => onAddSubInput(question)}>Add Sub-Input</div>
             <div className="btn btn-danger">Delete</div>
           </div>
         </div>
