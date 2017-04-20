@@ -23,7 +23,7 @@ export function addSubInput(question, index) {
 export function deleteInput(question) {
   return {
     type: ACTION_TYPES.DELETE_INPUT,
-    questionId: question.id
+    question: question
   }
 }
 
@@ -67,24 +67,41 @@ export const actions = {
 // Action Handler Helpers
 // ------------------------------------
 
-function recursiveDeleteInput(state, action) {
-  var questionToDelete = state[action.questionId],
-      childIds = questionToDelete.childIds
+function recursiveDeleteInputById(state, action) {
+  var questionToDelete = state[action.question.id],
+      children = questionToDelete.children,
+      tempState = state,
+      tempAction;
 
-  let  {[questionToDelete.id]: deleted, ...newState} = state;
+  children.forEach(child => {
+    tempAction = {
+      ...action,
+      question: child
+    }
 
-  console.log('childIds is', childIds)
-
-  if (!childIds.length) {
-    return newState
-  }
-
-  childIds.forEach(id => {
-    action.questionId = id;
-    newState = recursiveDeleteInput(state, action)
+    tempState = recursiveDeleteInputById(tempState, tempAction)
   })
 
+  let  {[questionToDelete.id]: deleted, ...newState} = tempState;
+
   return newState;
+}
+
+function recursiveDeleteInputAllIds(state, action) {
+  var children = action.question.children,
+      tempState = state,
+      tempAction
+
+  children.forEach(child => {
+    tempAction = {
+      ...action,
+      question: child
+    }
+
+    tempState = recursiveDeleteInputAllIds(tempState, tempAction)
+  })
+
+  return tempState.filter(id => id !== action.question.id)
 }
 
 // ------------------------------------
@@ -127,7 +144,7 @@ const QUESTIONS_BY_ID_ACTION_HANDLERS = {
   },
   [ACTION_TYPES.DELETE_INPUT]: (state, action) => {
     console.log('deleting input')
-    return recursiveDeleteInput(state, action)
+    return recursiveDeleteInputById(state, action)
 
     // var questionToDelete = state[action.questionId],
     //     childIds = questionToDelete.childIds
@@ -217,12 +234,6 @@ export function getQuestionsList(state) {
     }
   })
 
-  // populatedQuestions.forEach(question => {
-  //   if (!question.parentId) {
-  //     questionList.push(question)
-  //   }
-  // })
-
   console.log('question list is', questionList)
 
   return questionList
@@ -236,7 +247,9 @@ const ALL_QUESTION_IDS_ACTION_HANDLERS = {
     return [...state, action.id]
   },
   [ACTION_TYPES.DELETE_INPUT]: (state, action) => {
-    return state.filter(id => id !== action.questionId)
+    console.log('delete input allids action', action)
+    return recursiveDeleteInputAllIds(state, action);
+    // return state.filter(id => id !== action.question.id)
   }
 }
 
