@@ -1,25 +1,6 @@
 # Example React Redux Form Builder
 
-
-## Table of Contents
-1. [Features](#features)
-1. [Requirements](#requirements)
-1. [Getting Started](#getting-started)
-1. [Application Structure](#application-structure)
-1. [Development](#development)
-  1. [Developer Tools](#developer-tools)
-  1. [Routing](#routing)
-1. [Testing](#testing)
-1. [Deployment](#deployment)
-1. [Build System](#build-system)
-  1. [Configuration](#configuration)
-  1. [Globals](#globals)
-  1. [Styles](#styles)
-  1. [Server](#server)
-  1. [Production Optimization](#production-optimization)
-1. [Learning Resources](#learning-resources)
-1. [FAQ](#troubleshooting)
-1. [Thank You](#thank-you)
+Most of this readme is credited to https://github.com/davezuko/react-redux-starter-kit
 
 ## Features
 * [react](https://github.com/facebook/react)
@@ -35,16 +16,12 @@
 * node `^4.5.0`
 * yarn `^0.17.0` or npm `^3.0.0`
 
-## Getting Started
-
-After confirming that your development environment meets the specified [requirements](#requirements), you can create a new project based on `react-redux-starter-kit` by doing the following:
-
 ### Install from source
 
 First, clone the project:
 
 ```bash
-$ git clone https://github.com/davezuko/react-redux-starter-kit.git <my-project-name>
+$ git clone https://github.com/dannyrdalton/example_react_redux_form_builder <my-project-name>
 $ cd <my-project-name>
 ```
 
@@ -57,6 +34,7 @@ $ yarn start      # Compile and launch (same as `npm start`)
 If everything works, you should see the following:
 
 <img src="http://i.imgur.com/Kk2qTHC.png" />
+
 
 While developing, you will probably rely mostly on `npm start`; however, there are additional scripts at your disposal:
 
