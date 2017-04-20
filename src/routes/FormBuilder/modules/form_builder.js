@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { ACTION_TYPES } from '../config/form_builder_config'
+import { ACTION_TYPES, QUESTION_TYPES } from '../config/form_builder_config'
 
 let nextInputId = 0;
 
@@ -19,21 +19,19 @@ export function addSubInput(question, index) {
   }
 }
 
-export function onQuestionChange(value) {
+export function onTextChange(question, inputValue) {
   return {
-    type: 'ON_QUESTION_CHANGE',
-    payload: {
-      value: value
-    }
+    type: ACTION_TYPES.ON_TEXT_CHANGE,
+    question: question,
+    text: inputValue
   }
 }
 
-export function onTypeChange(value) {
+export function onTypeChange(question, inputValue) {
   return {
-    type: 'ON_TYPE_CHANGE',
-    payload: {
-      value: value
-    }
+    type: ACTION_TYPES.ON_TYPE_CHANGE,
+    question: question,
+    typeId: inputValue
   }
 }
 
@@ -44,6 +42,9 @@ export const actions = {
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
+
+//would only keep track of childIds at scale or takes too much memory
+
 const QUESTIONS_BY_ID_ACTION_HANDLERS = {
   [ACTION_TYPES.ADD_INPUT]: (state, action) => {
     //refactor into another function
@@ -52,18 +53,18 @@ const QUESTIONS_BY_ID_ACTION_HANDLERS = {
       [action.id]: {
         id: action.id,
         parentId: undefined,
-        children: []
+        children: [],
+        type: QUESTION_TYPES.TEXT
       }
     }
   },
   [ACTION_TYPES.ADD_SUB_INPUT]: (state, action) => {
-    console.log('adding sub input')
-    console.log('action', action)
 
     var newQuestion = {
       id: action.question.id + action.question.children.length,
       parentId: action.question.id,
-      children: []
+      children: [],
+      type: QUESTION_TYPES.TEXT
     }
 
     action.question.children.push(newQuestion)
@@ -76,28 +77,23 @@ const QUESTIONS_BY_ID_ACTION_HANDLERS = {
       [newQuestion.id]: newQuestion
     }
   },
-  'ON_QUESTION_CHANGE': (state, action) => {
-    console.log('question change')
-    console.log(action.payload.value)
+  [ACTION_TYPES.ON_TEXT_CHANGE]: (state, action) => {
+    action.question.text = action.text
 
-    return state
+    return {
+      ...state,
+      [action.question.id]: action.question
+    }
   },
-  'ON_TYPE_CHANGE': (state, action) => {
-    console.log('type change')
-    console.log(action.payload.value)
+  [ACTION_TYPES.ON_TYPE_CHANGE]: (state, action) => {
+    action.question.type = QUESTION_TYPES[action.typeId];
 
-    return state
+    return {
+      ...state,
+      [action.question.id]: action.question
+    }
   }
 }
-
-//would be in a Question model normally
-// function populateChildQuestions(question, questionsById) {
-//   question.children = []
-
-//   question.childIds.forEach(id => {
-//     question.children.push(questionsById[id])
-//   })
-// }
 
 export function getQuestionsList(state) {
   var questionList = [],

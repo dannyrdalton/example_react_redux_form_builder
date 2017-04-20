@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { addInput, addSubInput, onQuestionChange, onTypeChange, getQuestionsList } from '../modules/form_builder'
+import { addInput, addSubInput, onTextChange, onTypeChange, getQuestionsList } from '../modules/form_builder'
 import FormBuilder from '../components/FormBuilder'
 
 class FormBuilderContainer extends Component {
@@ -13,7 +13,7 @@ class FormBuilderContainer extends Component {
 const mapDispatchToProps = {
   addInput,
   addSubInput,
-  onQuestionChange,
+  onTextChange,
   onTypeChange
 }
 
