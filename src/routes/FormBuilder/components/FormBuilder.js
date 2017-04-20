@@ -13,7 +13,9 @@ export const FormBuilder = (props) => (
       questions={props.questionsList}
       onAddSubInput={props.addSubInput}
       onTextChange={props.onTextChange}
-      onTypeChange={props.onTypeChange}>
+      onTypeChange={props.onTypeChange}
+      onConditionChange={props.onConditionChange}
+      onConditionValueChange={props.onConditionValueChange}>
     </FormBuilderQuestion>
     <div className="form-builder-buttons">
       <div className="btn btn-success" onClick={props.addInput}>Add Input</div> 

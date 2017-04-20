@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { ACTION_TYPES, QUESTION_TYPES } from '../config/form_builder_config'
+import { ACTION_TYPES, QUESTION_TYPES, QUESTION_CONDITIONS } from '../config/form_builder_config'
 
 let nextInputId = 0;
 
@@ -15,7 +15,8 @@ export function addInput() {
 export function addSubInput(question, index) {
   return {
     type: ACTION_TYPES.ADD_SUB_INPUT,
-    question: question
+    question: question,
+    id: question.id + question.children.length
   }
 }
 
@@ -32,6 +33,22 @@ export function onTypeChange(question, inputValue) {
     type: ACTION_TYPES.ON_TYPE_CHANGE,
     question: question,
     typeId: inputValue
+  }
+}
+
+export function onConditionChange(question, inputValue) {
+  return {
+    type: ACTION_TYPES.ON_CONDITION_CHANGE,
+    question: question,
+    conditionId: inputValue
+  }
+}
+
+export function onConditionValueChange(question, inputValue) {
+  return {
+    type: ACTION_TYPES.ON_CONDITION_VALUE_CHANGE,
+    question: question,
+    conditionValue: inputValue
   }
 }
 
@@ -53,23 +70,23 @@ const QUESTIONS_BY_ID_ACTION_HANDLERS = {
       [action.id]: {
         id: action.id,
         parentId: undefined,
-        children: [],
-        type: QUESTION_TYPES.TEXT
+        childIds: [],
+        type: QUESTION_TYPES.NUMBER
       }
     }
   },
   [ACTION_TYPES.ADD_SUB_INPUT]: (state, action) => {
 
     var newQuestion = {
-      id: action.question.id + action.question.children.length,
+      id: action.id,
       parentId: action.question.id,
-      children: [],
-      type: QUESTION_TYPES.TEXT
+      childIds: [],
+      type: QUESTION_TYPES.TEXT,
+      condition: QUESTION_CONDITIONS.EQUALS
     }
 
-    action.question.children.push(newQuestion)
-
-    console.log(action.question)
+    action.question.childIds.push(newQuestion.id)
+    // action.question.children.push(newQuestion)
 
     return {
       ...state,
@@ -86,7 +103,27 @@ const QUESTIONS_BY_ID_ACTION_HANDLERS = {
     }
   },
   [ACTION_TYPES.ON_TYPE_CHANGE]: (state, action) => {
-    action.question.type = QUESTION_TYPES[action.typeId];
+    action.question.type = QUESTION_TYPES[action.typeId]
+
+    return {
+      ...state,
+      [action.question.id]: action.question
+    }
+  },
+  [ACTION_TYPES.ON_CONDITION_CHANGE]: (state, action) => {
+    action.question.condition = QUESTION_CONDITIONS[action.conditionId]
+
+    console.log(action.question)
+
+    return {
+      ...state,
+      [action.question.id]: action.question
+    }
+  },
+  [ACTION_TYPES.ON_CONDITION_VALUE_CHANGE]: (state, action) => {
+    console.log('on condition value change')
+
+    action.question.conditionValue = action.conditionValue;
 
     return {
       ...state,
@@ -95,20 +132,52 @@ const QUESTIONS_BY_ID_ACTION_HANDLERS = {
   }
 }
 
+function getParentQuestion(question, state) {
+  console.log('question parent is', state.byId[question.parentId])
+
+  return state.byId[question.parentId]
+}
+
+function getChildQuestions(question, state) {
+  var childQuestion;
+
+  return question.childIds.map(id => {
+    childQuestion = state.byId[id]
+
+    return {
+      ...childQuestion,
+      parent: question,
+      children: getChildQuestions(childQuestion, state)
+    }
+  })
+}
+
 export function getQuestionsList(state) {
   var questionList = [],
-      question;
-
-  console.log('getQuestionsList', state)
+      question,
+      populatedQuestion;
 
   state.allIds.forEach(id => {
     question = state.byId[id]
 
     if (!question.parentId) {
-      questionList.push(question)
+      populatedQuestion = {
+        ...question,
+        parent: getParentQuestion(question, state),
+        children: getChildQuestions(question, state)
+      }
+
+      questionList.push(populatedQuestion)
     }
   })
 
+  // populatedQuestions.forEach(question => {
+  //   if (!question.parentId) {
+  //     questionList.push(question)
+  //   }
+  // })
+
+  console.log('question list is', questionList)
 
   return questionList
 }
@@ -116,13 +185,15 @@ export function getQuestionsList(state) {
 const ALL_QUESTION_IDS_ACTION_HANDLERS = {
   [ACTION_TYPES.ADD_INPUT]: (state, action) => {
     return [...state, action.id]
-  }, 
+  },
+  [ACTION_TYPES.ADD_SUB_INPUT]: (state, action) => {
+    return [...state, action.id]
+  }
 }
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-// reducers needed: questions reducer (for questions object), questionsList: (for questions array)
 
 function questionsById(state = {}, action) {
   const handler = QUESTIONS_BY_ID_ACTION_HANDLERS[action.type]

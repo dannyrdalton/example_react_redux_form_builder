@@ -1,7 +1,16 @@
 const QUESTION_CONDITIONS = {
-  EQUALS: 'EQUALS',
-  GREATER_THAN: 'GREATER_THAN',
-  LESS_THAN: 'LESS_THAN'
+  EQUALS: {
+    id:'EQUALS',
+    label: 'Equals'
+  },
+  GREATER_THAN: {
+    id:'GREATER_THAN',
+    label: 'Is Greater Than'
+  },
+  LESS_THAN: {
+    id: 'LESS_THAN',
+    label: 'Is Less Than'
+  }
 }
 
 export const QUESTION_TYPES = {

@@ -2,13 +2,24 @@ export const ACTION_TYPES = {
   ADD_INPUT: 'ADD_INPUT',
   ADD_SUB_INPUT: 'ADD_SUB_INPUT',
   ON_TEXT_CHANGE: 'ON_TEXT_CHANGE',
-  ON_TYPE_CHANGE: 'ON_TYPE_CHANGE'
+  ON_TYPE_CHANGE: 'ON_TYPE_CHANGE',
+  ON_CONDITION_CHANGE: 'ON_CONDITION_CHANGE',
+  ON_CONDITION_VALUE_CHANGE: 'ON_CONDITION_VALUE_CHANGE'
 }
 
-const QUESTION_CONDITIONS = {
-  EQUALS: 'EQUALS',
-  GREATER_THAN: 'GREATER_THAN',
-  LESS_THAN: 'LESS_THAN'
+export const QUESTION_CONDITIONS = {
+  EQUALS: {
+    id:'EQUALS',
+    label: 'Equals'
+  },
+  GREATER_THAN: {
+    id:'GREATER_THAN',
+    label: 'Is Greater Than'
+  },
+  LESS_THAN: {
+    id: 'LESS_THAN',
+    label: 'Is Less Than'
+  }
 }
 
 export const QUESTION_TYPES = {
