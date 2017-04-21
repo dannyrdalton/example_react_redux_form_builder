@@ -1,5 +1,5 @@
 import React from 'react'
-import { QUESTION_TYPES, QUESTION_TYPES_ARRAY } from '../config/form_builder_question_config'
+import { QUESTION_TYPES, QUESTION_TYPES_ARRAY } from '../../../config/form_builder_config'
 // import PropTypes from 'prop-types'
 
 import './FormBuilderQuestion.scss'
@@ -38,7 +38,11 @@ export const FormBuilderQuestion = ({ questions, onAddSubInput, onDeleteInput, o
           }
           <div className='form-builder-question-row'>
             <div className='form-builder-question-label'>Question</div>
-            <input type='text' onChange={e => onTextChange(question, e.target.value)}/>
+            <input
+              type='text'
+              value={question.text}
+              onChange={e => onTextChange(question, e.target.value)}
+            />
           </div>
           <div className='form-builder-question-row'>
             <div className='form-builder-question-label'>Type</div>

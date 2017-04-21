@@ -3,6 +3,7 @@ import thunk from 'redux-thunk'
 import { browserHistory } from 'react-router'
 import makeRootReducer from './reducers'
 import { updateLocation } from './location'
+import { loadState, saveState } from './localStorage'
 
 export default (initialState = {}) => {
   // ======================================================
@@ -27,6 +28,10 @@ export default (initialState = {}) => {
   // ======================================================
   // Store Instantiation and HMR Setup
   // ======================================================
+
+  const persistedState = loadState()
+  initialState = persistedState
+
   const store = createStore(
     makeRootReducer(),
     initialState,
@@ -36,6 +41,12 @@ export default (initialState = {}) => {
     )
   )
   store.asyncReducers = {}
+
+  store.subscribe(() => {
+    saveState({
+      formBuilder: store.getState().formBuilder
+    })
+  })
 
   // To unsubscribe, invoke `store.unsubscribeHistory()` anytime
   store.unsubscribeHistory = browserHistory.listen(updateLocation(store))

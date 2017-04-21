@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { ACTION_TYPES, QUESTION_TYPES, QUESTION_CONDITIONS } from '../config/form_builder_config'
+import { ACTION_TYPES, TABS_CONFIG, QUESTION_TYPES, QUESTION_CONDITIONS } from '../config/form_builder_config'
 
 let nextInputId = 0;
 
@@ -59,6 +59,14 @@ export function onConditionValueChange(question, inputValue) {
   }
 }
 
+export function onSelectedTabChange(selectedTab, tabNamespace) {
+  return {
+    type: ACTION_TYPES.ON_SELECTED_TAB_CHANGE,
+    tab: selectedTab,
+    namespace: tabNamespace
+  }
+}
+
 export const actions = {
   addInput
 }
@@ -69,14 +77,25 @@ export const actions = {
 
 function recursiveDeleteInputById(state, action) {
   var questionToDelete = state[action.question.id],
-      children = questionToDelete.children,
+      childIds = questionToDelete.childIds,
       tempState = state,
-      tempAction;
+      tempAction,
+      parentQuestion;
 
-  children.forEach(child => {
+  if (questionToDelete.parentId) {
+    parentQuestion = state[questionToDelete.parentId]
+    parentQuestion.childIds = parentQuestion.childIds.filter(id => id !== questionToDelete.id)
+
+    tempState = {
+      ...tempState,
+      [parentQuestion.id]: parentQuestion
+    }
+  }
+
+  childIds.forEach(id => {
     tempAction = {
       ...action,
-      question: child
+      question: state[id]
     }
 
     tempState = recursiveDeleteInputById(tempState, tempAction)
@@ -247,9 +266,16 @@ const ALL_QUESTION_IDS_ACTION_HANDLERS = {
     return [...state, action.id]
   },
   [ACTION_TYPES.DELETE_INPUT]: (state, action) => {
-    console.log('delete input allids action', action)
     return recursiveDeleteInputAllIds(state, action);
-    // return state.filter(id => id !== action.question.id)
+  }
+}
+
+const TABS_ACTION_HANDLERS = {
+  [ACTION_TYPES.ON_SELECTED_TAB_CHANGE]: (state, action) => {
+    return {
+      ...state,
+      [action.namespace]: action.tab
+    };
   }
 }
 
@@ -274,8 +300,19 @@ const questions = combineReducers({
   allIds: allQuestionIds
 })
 
+var tabsInitialState = {
+  [TABS_CONFIG.NAME]: TABS_CONFIG.TABS.CREATE.id
+}
+
+function tabs(state = tabsInitialState, action) {
+  const handler = TABS_ACTION_HANDLERS[action.type]
+
+  return handler ? handler(state, action) : state
+}
+
 const formBuilderReducer = combineReducers({
-  questions
+  questions,
+  tabs
 })
 
 export default formBuilderReducer

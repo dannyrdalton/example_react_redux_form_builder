@@ -8,7 +8,8 @@ import {
   onTypeChange,
   onConditionChange,
   onConditionValueChange,
-  getQuestionsList
+  getQuestionsList,
+  onSelectedTabChange
 } from '../modules/form_builder'
 
 import FormBuilder from '../components/FormBuilder'
@@ -27,11 +28,13 @@ const mapDispatchToProps = {
   onTextChange,
   onTypeChange,
   onConditionChange,
-  onConditionValueChange
+  onConditionValueChange,
+  onSelectedTabChange
 }
 
 const mapStateToProps = (state) => ({
-  questionsList: getQuestionsList(state.formBuilder.questions)
+  questionsList: getQuestionsList(state.formBuilder.questions),
+  tabs: state.formBuilder.tabs
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(FormBuilderContainer)
